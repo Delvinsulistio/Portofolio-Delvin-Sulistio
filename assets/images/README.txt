@@ -1,0 +1,1 @@
+Ini adalah seluruh foto asset dari projek-projek saya
