@@ -141,3 +141,251 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setTimeout(typeEffect, 1800);
 });
+
+
+// PROJECT DETAIL DATA
+const projectData = {
+  codequest: {
+    title: "CodeQuest",
+    category: "MOBILE APP · GAMIFIED LEARNING",
+    description:
+      "CodeQuest is a gamified programming-learning application designed to help high school students and beginners learn programming through structured lessons, quizzes, experience points, and achievements.",
+
+    images: [
+      "assets/images/projects/Code1.jpeg",
+      "assets/images/projects/Code2.jpeg",
+      "assets/images/projects/Code3.jpeg"
+    ],
+
+    features: [
+      "Structured programming learning materials",
+      "Interactive quizzes and scoring",
+      "XP, levels, and achievement badges",
+      "Learning progress tracking"
+    ],
+
+    technologies: [
+      "Flutter",
+      "Dart",
+      "MongoDB",
+      "Node.js",
+      "React"
+    ],
+
+    github: "https://github.com/Gunadi-kripto/CodeQuest-"
+  },
+
+  ponti: {
+    title: "Ponti Jaya Motor",
+    category: "WEBSITE · AUTOMOTIVE MARKETPLACE",
+    description:
+      "Ponti Jaya Motor is a web-based marketplace designed to showcase and sell Bajaj motorcycle spare parts, making it easier for customers to explore available products and services.",
+
+    images: [
+      "assets/images/projects/P1.jpeg",
+      "assets/images/projects/P2.jpeg",
+      "assets/images/projects/P3.jpeg"
+    ],
+
+    features: [
+      "Spare parts product catalog",
+      "Product category browsing",
+      "Product information display",
+      "Online marketplace experience"
+    ],
+
+    technologies: [
+      "Next.js",
+      "React",
+      "Node.js"
+    ],
+
+    github: "https://github.com/Darrell30/Ponti-Jaya-Motor"
+  },
+
+  quickfood: {
+    title: "Quick Food",
+    category: "MOBILE APP · FOOD DELIVERY",
+    description:
+      "Quick Food is a food delivery application concept that simulates an online food ordering experience and integrates Google Maps for location-related functionality.",
+
+    images: [
+      "assets/images/projects/q1.jpeg",
+      "assets/images/projects/q2.jpeg",
+      "assets/images/projects/q3.jpeg"
+    ],
+
+    features: [
+      "Food ordering interface",
+      "Food and restaurant browsing",
+      "Google Maps integration",
+      "Mobile application experience"
+    ],
+
+    technologies: [
+      "Flutter",
+      "Dart",
+      "MongoDB",
+      "Cloudinary",
+      "Google Maps API"
+    ],
+
+    github: "https://github.com/Darrell30/Food-Delivery-App"
+  }
+};
+
+
+// PROJECT MODAL FUNCTIONALITY
+document.addEventListener("DOMContentLoaded", function () {
+
+  const modalElement = document.getElementById("projectModal");
+
+  if (!modalElement || typeof bootstrap === "undefined") {
+    console.error("Project modal or Bootstrap JS was not found.");
+    return;
+  }
+
+  const projectModal = new bootstrap.Modal(modalElement);
+
+  const title = document.getElementById("projectTitle");
+  const heading = document.getElementById("projectHeading");
+  const category = document.getElementById("projectCategory");
+  const description = document.getElementById("projectDescription");
+  const image = document.getElementById("projectImage");
+  const counter = document.getElementById("galleryCounter");
+  const dots = document.getElementById("galleryDots");
+  const features = document.getElementById("projectFeatures");
+  const technologies = document.getElementById("projectTechnologies");
+  const github = document.getElementById("projectGithub");
+
+  let currentProject = null;
+  let currentImageIndex = 0;
+
+  function showProjectImage(index) {
+
+    if (!currentProject) return;
+
+    const images = currentProject.images;
+
+    currentImageIndex =
+      (index + images.length) % images.length;
+
+    image.style.opacity = "0";
+
+    const nextImage = new Image();
+
+    nextImage.onload = function () {
+      image.src = nextImage.src;
+      image.alt = currentProject.title + " screenshot " +
+        (currentImageIndex + 1);
+
+      image.style.opacity = "1";
+    };
+
+    nextImage.onerror = function () {
+      image.style.opacity = "1";
+      console.error("Image not found:", images[currentImageIndex]);
+    };
+
+    nextImage.src = images[currentImageIndex];
+
+    counter.textContent =
+      String(currentImageIndex + 1).padStart(2, "0") +
+      " / " +
+      String(images.length).padStart(2, "0");
+
+    dots.innerHTML = "";
+
+    images.forEach((_, i) => {
+
+      const dot = document.createElement("button");
+
+      dot.type = "button";
+      dot.className =
+        "gallery-dot" +
+        (i === currentImageIndex ? " active" : "");
+
+      dot.setAttribute("aria-label", "Show screenshot " + (i + 1));
+
+      dot.addEventListener("click", () => {
+        showProjectImage(i);
+      });
+
+      dots.appendChild(dot);
+    });
+  }
+
+
+  function openProject(projectKey) {
+
+    const project = projectData[projectKey];
+
+    if (!project) return;
+
+    currentProject = project;
+    currentImageIndex = 0;
+
+    title.textContent = project.title;
+    heading.textContent = project.title;
+    category.textContent = project.category;
+    description.textContent = project.description;
+
+    // FEATURES
+    features.innerHTML = "";
+
+    project.features.forEach(feature => {
+      const li = document.createElement("li");
+      li.textContent = feature;
+      features.appendChild(li);
+    });
+
+    // TECHNOLOGIES
+    technologies.innerHTML = "";
+
+    project.technologies.forEach(tech => {
+      const span = document.createElement("span");
+      span.textContent = tech;
+      technologies.appendChild(span);
+    });
+
+    // GITHUB LINK
+    github.href = project.github;
+
+    showProjectImage(0);
+
+    projectModal.show();
+  }
+
+
+  // OPEN PROJECT BUTTONS
+  document.querySelectorAll(".project-detail-btn").forEach(button => {
+
+    button.addEventListener("click", function () {
+
+      const projectKey = this.dataset.project;
+
+      openProject(projectKey);
+
+    });
+
+  });
+
+
+  // NEXT IMAGE
+  document.getElementById("galleryNext")
+    .addEventListener("click", function () {
+
+      showProjectImage(currentImageIndex + 1);
+
+    });
+
+
+  // PREVIOUS IMAGE
+  document.getElementById("galleryPrev")
+    .addEventListener("click", function () {
+
+      showProjectImage(currentImageIndex - 1);
+
+    });
+
+});
